@@ -1,0 +1,38 @@
+.image-button {
+    img {
+        padding: 10px;
+        border-radius: 5px;
+        border: 5px solid #FFF;
+    }
+    &:hover {
+        img {
+            border-radius: 10px;
+            border: 5px solid #000;
+        }
+    }
+
+}
+
+#card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+div.card {
+    max-width: 250px;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+
+    img.card-img {
+        padding: 15px;
+    }
+
+    .card-content {
+        
+        .card-director {
+            margin-bottom: 5px;
+        }
+    }
+}

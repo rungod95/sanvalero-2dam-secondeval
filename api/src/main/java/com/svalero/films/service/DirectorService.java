@@ -19,19 +19,13 @@ public class DirectorService {
     private DirectorRepository directorRepository;
 
     public List<Director> getAllDirectors() {
-        try {
+
             logger.info("Getting all directors from db");
             List<Director> director = directorRepository.findAll();
             logger.info("{} directors retrieved", director.size());
-            if (director.isEmpty()) {
-                logger.info("No directors found");
-                throw new ResourceNotFoundException("Directors not found");
-            }
+
             return director;
-        } catch (Exception e) {
-            logger.info("Error while retrieving directors");
-            throw new ResourceNotFoundException("Error while retrieving directors");
-        }
+
     }
 
     public Director getDirectorsById(long id) {
@@ -98,7 +92,7 @@ public class DirectorService {
         Director existingDirector = directorRepository.findById(id).orElse(null);
 
         if (existingDirector == null) {
-            throw new IllegalArgumentException("Director with ID " + id + " not found");
+            throw new ResourceNotFoundException("Director with ID " + id + " not found");
         }
         directorRepository.delete(existingDirector);
     }

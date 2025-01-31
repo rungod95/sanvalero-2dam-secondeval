@@ -1,7 +1,9 @@
 package com.svalero.films.service;
 
+import com.svalero.films.domain.Director;
 import com.svalero.films.domain.Film;
 import com.svalero.films.exception.ResourceNotFoundException;
+import com.svalero.films.repository.DirectorRepository;
 import com.svalero.films.repository.FilmRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,20 +19,14 @@ public class FilmService {
     @Autowired
     private FilmRepository filmRepository;
 
+    @Autowired
+    private  DirectorRepository directorRepository;
+
     public List<Film> getAllFilms() {
-        try {
-            logger.info("Getting all films from db");
-            List<Film> film = filmRepository.findAll();
-            logger.info("{} films retrieved", film.size());
-            if (film.isEmpty()) {
-                logger.info("No films found");
-                throw new ResourceNotFoundException("Films not found");
-            }
-            return film;
-        } catch (Exception e) {
-            logger.info("Error while retrieving films");
-            throw new ResourceNotFoundException("Error while retrieving films");
-        }
+        logger.info("Getting all films from db");
+        List<Film> film = filmRepository.findAll();
+        logger.info("{} films retrieved", film.size());
+        return film;
     }
 
     public Film getFilmsById(long id) {
@@ -45,6 +41,7 @@ public class FilmService {
 
     public Film createFilms(Film film) {
         logger.info("Creating a new film");
+
         if (film == null) {
             throw new IllegalArgumentException("Film cannot be null");
         }
@@ -63,6 +60,17 @@ public class FilmService {
         if (film.getViewed() == null) {
             throw new IllegalArgumentException("Viewed flag cannot be null");
         }
+        // Verificar si el director existe en la base de datos
+        if (film.getDirector() == null || film.getDirector().getId() == null) {
+            throw new IllegalArgumentException("Director ID cannot be null");
+        }
+
+        Director director = directorRepository.findById(film.getDirector().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Director with ID " + film.getDirector().getId() + " not found"));
+
+        // Asignar el director encontrado antes de guardar la película
+        film.setDirector(director);
+
         return filmRepository.save(film);
     }
 
@@ -97,7 +105,7 @@ public class FilmService {
         Film existingFilm = filmRepository.findById(id).orElse(null);
 
         if (existingFilm == null) {
-            throw new IllegalArgumentException("Film with ID " + id + " not found");
+            throw new ResourceNotFoundException("Film with ID " + id + " not found");
         }
         filmRepository.delete(existingFilm);
     }

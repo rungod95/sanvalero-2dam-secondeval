@@ -1,7 +1,9 @@
 package com.svalero.films.service;
 
+import com.svalero.films.domain.Director;
 import com.svalero.films.domain.Film;
 import com.svalero.films.exception.ResourceNotFoundException;
+import com.svalero.films.repository.DirectorRepository;
 import com.svalero.films.repository.FilmRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,9 @@ public class FilmService {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(FilmService.class);
     @Autowired
     private FilmRepository filmRepository;
+
+    @Autowired
+    private  DirectorRepository directorRepository;
 
     public List<Film> getAllFilms() {
         try {
@@ -45,6 +50,10 @@ public class FilmService {
 
     public Film createFilms(Film film) {
         logger.info("Creating a new film");
+
+        Director director = film.getDirector();
+
+
         if (film == null) {
             throw new IllegalArgumentException("Film cannot be null");
         }
@@ -63,6 +72,10 @@ public class FilmService {
         if (film.getViewed() == null) {
             throw new IllegalArgumentException("Viewed flag cannot be null");
         }
+        if (director.getId() == null) {
+            throw new ResourceNotFoundException("Director doesnt exist");
+        }
+
         return filmRepository.save(film);
     }
 

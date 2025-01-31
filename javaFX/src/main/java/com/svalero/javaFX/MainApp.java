@@ -18,6 +18,6 @@ public class MainApp extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args); // Inicia la aplicación JavaFX
+        launch(args); // Launch JavaFX application
     }
 }

@@ -23,18 +23,18 @@ public class MainController {
 
     public void updateResponseLabel(String jsonResponse) {
         try {
-            // Parsear el JSON
+            // JSON parse
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(jsonResponse);
 
-            // Extraer el campo "fact"
+            // Extract desired field from the JSON response
             String fact = rootNode.get("fact").asText();
 
-            // Actualizar el label en el hilo de JavaFX
+            // Update the response label with the field from the JSON response
             responseLabel.setText(fact);
 
         } catch (Exception e) {
-            responseLabel.setText("Error al procesar la respuesta");
+            responseLabel.setText("Error processing response");
             e.printStackTrace();
         }
     }

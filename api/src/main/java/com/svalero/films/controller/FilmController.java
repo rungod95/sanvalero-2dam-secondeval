@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,12 @@ public class FilmController {
 
     @GetMapping
     public ResponseEntity<List<Film>> getAllFilms() {
-        List<Film> films = filmService.getAllFilms();
+        List<Film> films = new ArrayList<>();
+        try {
+             films = filmService.getAllFilms();
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(films, HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(films, HttpStatus.OK);
     }
 

@@ -23,7 +23,7 @@ public class FilmService {
             }
             return film;
         } catch (Exception e) {
-            throw new RuntimeException("Error while retrieving films");
+            throw new ResourceNotFoundException("Error while retrieving films");
         }
     }
 

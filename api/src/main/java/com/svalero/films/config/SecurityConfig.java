@@ -21,24 +21,34 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // Permitir acceso sin autenticación a login y registro
                         .requestMatchers("api/auth/login", "api/auth/register").permitAll()
-                        .requestMatchers("/films", "/films/{id}", "/directors", "/directors/{id}").permitAll() // Acceso libre a GET, POST y PUT
-                        .requestMatchers(HttpMethod.DELETE, "/films/{id}", "/directors/{id}").authenticated() // Requiere JWT solo en DELETE
-                        .anyRequest().authenticated()
+
+                        // Permitir GET, POST y PUT en films y directors sin autenticación
+                        .requestMatchers(HttpMethod.GET, "/films", "/films/{id}", "/directors", "/directors/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/films", "/directors").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/films/{id}", "/directors/{id}").permitAll()
+
+                        // Requiere autenticación solo para DELETE en films y directors
+                        .requestMatchers(HttpMethod.DELETE, "/films/{id}", "/directors/{id}").authenticated()
+
+                        // Cualquier otra petición también permitida (puedes cambiar esto si es necesario)
+                        .anyRequest().permitAll()
                 )
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder();
-        }
-
-        @Bean
-        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
-            return authenticationConfiguration.getAuthenticationManager();
-        }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+}

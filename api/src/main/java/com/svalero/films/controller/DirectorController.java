@@ -5,9 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("directors")
+@RequestMapping("/directors")
 public class DirectorController {
 
-    @Autowired
-    private DirectorService directorService
+
 }

@@ -26,13 +26,13 @@
     const template = document.querySelector('#card-template');
     const container = document.querySelector('#card-container');
 
-    const filmsApi = fetch('http://localhost:8080/films')
+    const filmsApi = fetch('http://localhost:8080/films', { mode: "cors" })
         .then(response => response.json())
         .then(data => {
-            date.forEach(film => {
+            data.forEach(film => {
                 const clone = template.content.cloneNode(true);
                 clone.querySelector('.card-title').textContent = film.title;
-                clone.querySelector('.card-director').textContent = film.director.name + ' ' + film.director.lastname;
+                clone.querySelector('.card-director').textContent = film.director.name + ' ' + film.director.lastName;
                 container.appendChild(clone);
             });
         })

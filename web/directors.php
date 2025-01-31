@@ -26,12 +26,12 @@
     const template = document.querySelector('#card-template');
     const container = document.querySelector('#card-container');
 
-    const directorsApi = fetch('http://localhost:8080/directors')
+    const directorsApi = fetch('http://localhost:8080/directors', { mode: "cors" })
         .then(response => response.json())
         .then(data => {
-            date.forEach(director => {
+            data.forEach(director => {
                 const clone = template.content.cloneNode(true);
-                clone.querySelector('.card-name').textContent = director.name + ' ' + director.lastname;
+                clone.querySelector('.card-name').textContent = director.name + ' ' + director.lastName;
                 clone.querySelector('.card-birth-date').textContent = director.birthDate;
                 container.appendChild(clone);
             });

@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 public class ApiService {
     private final HttpClient client = HttpClient.newHttpClient();
-    private final String API_URL = "https://catfact.ninja/fact";
+    private final String API_URL = "http://localhost:8080/films";
 
     public void getData(Consumer<String> callback) {
         HttpRequest request = HttpRequest.newBuilder()

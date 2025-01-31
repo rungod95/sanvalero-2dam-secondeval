@@ -2,6 +2,7 @@ package com.svalero.films.controller;
 
 
 import com.svalero.films.domain.Director;
+import com.svalero.films.domain.Film;
 import com.svalero.films.exception.InvalidDataException;
 import com.svalero.films.exception.ResourceNotFoundException;
 import com.svalero.films.service.DirectorService;
@@ -59,12 +60,30 @@ public class DirectorController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
-
     @PutMapping("/{id}")
-    public ResponseEntity<Director> updateDirector(@PathVariable Long id, @RequestBody Director director) {
+    public ResponseEntity<?> updateDirector(@PathVariable Long id, @RequestBody Director director) {
+        try {
+            logger.info("Starting operation to modify a director with id {}", id);
+            Director updatedDirector = directorService.updateDirector(id, director);
+            logger.info("Operation completed: director with ID {} has been modified", id);
+            return new ResponseEntity<>(updatedDirector, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            logger.error("Error updating director: " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            logger.error("Error updating director: " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error("Unexpected error: " + e.getMessage());
+            return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Director> updatePartialDirector(@PathVariable Long id, @RequestBody Director director) {
         try {
             logger.info("Starting operation to modify a director");
-            Director updatedDirector = directorService.updateDirector(id, director);
+            Director updatedDirector = directorService.updatePartialDirector(id, director);
             logger.info("Operation completed: director with ID {} has been modified", id);
             return new ResponseEntity<>(updatedDirector, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {

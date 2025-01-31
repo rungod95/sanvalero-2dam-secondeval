@@ -2,6 +2,7 @@ package com.svalero.films.service;
 
 
 import com.svalero.films.domain.Director;
+import com.svalero.films.domain.Director;
 import com.svalero.films.exception.ResourceNotFoundException;
 import com.svalero.films.repository.DirectorRepository;
 import org.slf4j.Logger;
@@ -23,9 +24,7 @@ public class DirectorService {
             logger.info("Getting all directors from db");
             List<Director> director = directorRepository.findAll();
             logger.info("{} directors retrieved", director.size());
-
             return director;
-
     }
 
     public Director getDirectorsById(long id) {
@@ -61,7 +60,46 @@ public class DirectorService {
         return directorRepository.save(director);
     }
 
-    public Director updateDirector(Long id, Director director) {
+    public Director updateDirector(Long id, Director updatedDirector) {
+        logger.info("Updating director with ID {}", id);
+
+        // Verificar si el director existe en la base de datos
+        Director director = directorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Director with ID " + id + " not found"));
+
+        // Validaciones de entrada
+        if (updatedDirector == null) {
+            throw new IllegalArgumentException("Updated director data cannot be null");
+        }
+        if (updatedDirector.getName() == null || updatedDirector.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (updatedDirector.getLastName() == null || updatedDirector.getLastName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Last name cannot be null or empty");
+        }
+        if (updatedDirector.getBirthDate() == null) {
+            throw new IllegalArgumentException("Birth date cannot be null");
+        }
+        if (updatedDirector.getNationality() == null || updatedDirector.getNationality().trim().isEmpty()) {
+            throw new IllegalArgumentException("Nationality cannot be null or empty");
+        }
+        if (updatedDirector.getAwarded() == null) {
+            throw new IllegalArgumentException("Awarded flag cannot be null");
+        }
+
+        // Actualizar los valores del director
+        director.setName(updatedDirector.getName());
+        director.setLastName(updatedDirector.getLastName());
+        director.setBirthDate(updatedDirector.getBirthDate());
+        director.setNationality(updatedDirector.getNationality());
+        director.setAwarded(updatedDirector.getAwarded());
+
+        return directorRepository.save(director);
+    }
+
+
+
+    public Director updatePartialDirector(Long id, Director director) {
         logger.info("Updating director with ID {}", id);
         Optional<Director> oldDirector = directorRepository.findById(id);
         if (oldDirector.isEmpty()) {

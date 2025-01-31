@@ -65,6 +65,7 @@ public class FilmService {
             throw new IllegalArgumentException("Director ID cannot be null");
         }
 
+
         Director director = directorRepository.findById(film.getDirector().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Director with ID " + film.getDirector().getId() + " not found"));
 
@@ -74,7 +75,45 @@ public class FilmService {
         return filmRepository.save(film);
     }
 
-    public Film updateFilm(Long id, Film film) {
+    public Film updateFilm(Long id, Film updatedFilm) {
+        logger.info("Updating film with ID {}", id);
+
+        // Verificar si la película existe en la base de datos
+        Film film = filmRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Film with ID " + id + " not found"));
+
+        // Validaciones de entrada
+        if (updatedFilm == null) {
+            throw new IllegalArgumentException("Updated film data cannot be null");
+        }
+        if (updatedFilm.getTitle() == null || updatedFilm.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty");
+        }
+        if (updatedFilm.getGenre() == null || updatedFilm.getGenre().trim().isEmpty()) {
+            throw new IllegalArgumentException("Genre cannot be null or empty");
+        }
+        if (updatedFilm.getReleaseDate() == null) {
+            throw new IllegalArgumentException("Release date cannot be null");
+        }
+        if (updatedFilm.getDuration() == null) {
+            throw new IllegalArgumentException("Duration cannot be null");
+        }
+        if (updatedFilm.getViewed() == null) {
+            throw new IllegalArgumentException("Viewed flag cannot be null");
+        }
+
+        // Actualizar los valores de la película
+        film.setTitle(updatedFilm.getTitle());
+        film.setGenre(updatedFilm.getGenre());
+        film.setDuration(updatedFilm.getDuration());
+        film.setReleaseDate(updatedFilm.getReleaseDate());
+        film.setViewed(updatedFilm.getViewed());
+
+        return filmRepository.save(film);
+    }
+
+
+    public Film updatePartialFilm(Long id, Film film) {
         logger.info("Updating film with ID {}", id);
         Optional<Film> oldFilm = filmRepository.findById(id);
         if (oldFilm.isEmpty()) {
@@ -109,6 +148,8 @@ public class FilmService {
         }
         filmRepository.delete(existingFilm);
     }
+
+
 
 }
 

@@ -31,6 +31,7 @@ public class FilmController {
             films = filmService.getAllFilms();
             logger.info("Operation completed: {} films retrieved");
         } catch (ResourceNotFoundException e) {
+            logger.info("No films found");
             return new ResponseEntity<>(films, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(films, HttpStatus.OK);

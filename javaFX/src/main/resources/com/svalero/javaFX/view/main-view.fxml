@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.svalero.javaFX.controller.MainController"
-      spacing="10" alignment="CENTER">
-    
-    <Label fx:id="responseLabel" text="Press button to get all desired data"/>
-    <Button text="Films" onAction="#fetchData"/>
-    <Button text="Directors" onAction="#fetchData"/>
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.svalero.javaFX.controller.MainController">
+
+    <Button text="Load Films" onAction="#fetchData"/>
+
+    <TableView fx:id="filmTableView" prefHeight="300" prefWidth="400">
+        <columns>
+            <TableColumn fx:id="titleColumn" text="Title" prefWidth="150"/>
+            <TableColumn fx:id="genreColumn" text="Genre" prefWidth="100"/>
+            <TableColumn fx:id="directorColumn" text="Director" prefWidth="150"/>
+        </columns>
+    </TableView>
+
 </VBox>

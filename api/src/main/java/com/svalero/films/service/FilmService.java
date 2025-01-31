@@ -63,9 +63,6 @@ public class FilmService {
         if (film.getViewed() == null) {
             throw new IllegalArgumentException("Viewed flag cannot be null");
         }
-        if (film.getDirector() == null) {
-            throw new IllegalArgumentException("Director cannot be null");
-        }
         return filmRepository.save(film);
     }
 

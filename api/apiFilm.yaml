@@ -1,0 +1,260 @@
+openapi: 3.0.3
+info:
+  title: Films API
+  description: API for managing movies and directors
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@filmsapi.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /directors:
+    get:
+      summary: Get all directors
+      operationId: getAllDirectors
+      tags:
+        - Directors
+      responses:
+        "200":
+          description: A list of directors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Director"
+    post:
+      summary: Add a new director
+      operationId: addDirector
+      tags:
+        - Directors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Director"
+      responses:
+        "201":
+          description: Director added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Director"
+
+  /directors/{id}:
+    get:
+      summary: Get a director by ID
+      operationId: getDirectorById
+      tags:
+        - Directors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Director found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Director"
+        "404":
+          description: Director not found
+    put:
+      summary: Update a director
+      operationId: updateDirector
+      tags:
+        - Directors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Director"
+      responses:
+        "200":
+          description: Director updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Director"
+        "404":
+          description: Director not found
+    delete:
+      summary: Delete a director
+      operationId: deleteDirector
+      tags:
+        - Directors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Director deleted successfully
+        "404":
+          description: Director not found
+
+  /films:
+    get:
+      summary: Get all films
+      operationId: getAllFilms
+      tags:
+        - Films
+      responses:
+        "200":
+          description: A list of films
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Film"
+    post:
+      summary: Add a new film
+      operationId: addFilm
+      tags:
+        - Films
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Film"
+      responses:
+        "201":
+          description: Film added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Film"
+
+  /films/{id}:
+    get:
+      summary: Get a film by ID
+      operationId: getFilmById
+      tags:
+        - Films
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Film found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Film"
+        "404":
+          description: Film not found
+    put:
+      summary: Update a film
+      operationId: updateFilm
+      tags:
+        - Films
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Film"
+      responses:
+        "200":
+          description: Film updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Film"
+        "404":
+          description: Film not found
+    delete:
+      summary: Delete a film
+      operationId: deleteFilm
+      tags:
+        - Films
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Film deleted successfully
+        "404":
+          description: Film not found
+
+components:
+  schemas:
+    Director:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Christopher"
+        lastName:
+          type: string
+          example: "Nolan"
+        birthDate:
+          type: string
+          format: date
+          example: "1970-07-30"
+        nationality:
+          type: string
+          example: "British"
+        awarded:
+          type: boolean
+          example: true
+
+    Film:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Inception"
+        genre:
+          type: string
+          example: "Sci-Fi"
+        releaseDate:
+          type: string
+          format: date
+          example: "2010-07-16"
+        duration:
+          type: integer
+          example: 148
+        viewed:
+          type: boolean
+          example: true
+        director:
+          $ref: "#/components/schemas/Director"
+

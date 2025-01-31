@@ -49,15 +49,18 @@ public class DirectorController {
     }
 
     @PostMapping
-    public ResponseEntity<Director> createDirector(@RequestBody Director director) {
+    public ResponseEntity<?> createDirector(@RequestBody Director director) {
         try {
             logger.info("Starting operation to create a director");
             Director newDirector = directorService.createDirectors(director);
-            logger.info("Director created");
+            logger.info("Director created successfully");
             return new ResponseEntity<>(newDirector, HttpStatus.CREATED);
-        } catch (InvalidDataException e) {
-            logger.info("Error creating the director: Bad Request");
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException e) {
+            logger.error("Error creating the director: " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error("Unexpected error: " + e.getMessage());
+            return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @PutMapping("/{id}")

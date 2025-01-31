@@ -45,6 +45,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Director"
+        "400":
+            description: Bad Request
 
   /directors/{id}:
     get:
@@ -93,6 +95,42 @@ paths:
                 $ref: "#/components/schemas/Director"
         "404":
           description: Director not found
+    patch:
+      summary: Partially update a director
+      operationId: patchDirector
+      tags:
+        - Directors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Christopher"
+                lastName:
+                  type: string
+                  example: "Nolan"
+                nationality:
+                  type: string
+                  example: "British"
+      responses:
+        "200":
+          description: Director updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Director"
+        "404":
+          description: Director not found
     delete:
       summary: Delete a director
       operationId: deleteDirector
@@ -109,7 +147,6 @@ paths:
           description: Director deleted successfully
         "404":
           description: Director not found
-
   /films:
     get:
       summary: Get all films
@@ -145,7 +182,8 @@ paths:
                 $ref: "#/components/schemas/Film"
         "400":
           description: Bad Request
-
+        "404":
+          description: Director not found
   /films/{id}:
     get:
       summary: Get a film by ID
@@ -184,6 +222,42 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/Film"
+      responses:
+        "200":
+          description: Film updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Film"
+        "404":
+          description: Film not found
+    patch:
+      summary: Partially update a film
+      operationId: patchFilm
+      tags:
+        - Films
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Inception"
+                genre:
+                  type: string
+                  example: "Sci-Fi"
+                duration:
+                  type: integer
+                  example: 148
       responses:
         "200":
           description: Film updated successfully
@@ -259,4 +333,3 @@ components:
           example: true
         director:
           $ref: "#/components/schemas/Director"
-

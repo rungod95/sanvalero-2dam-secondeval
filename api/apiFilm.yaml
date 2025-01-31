@@ -143,6 +143,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Film"
+        "400":
+          description: Bad Request
 
   /films/{id}:
     get:

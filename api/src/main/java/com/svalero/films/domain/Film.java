@@ -38,8 +38,8 @@ public class Film {
     private Boolean viewed;
 
     @ManyToOne
-    @JoinColumn(name = "director_id")
-    @JsonBackReference
+    @JoinColumn(name = "director_id",referencedColumnName = "id")
+
     private Director director;
 
 }

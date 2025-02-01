@@ -1,7 +1,10 @@
 package com.svalero.films.controller;
 
+import com.svalero.films.domain.Director;
 import com.svalero.films.domain.Film;
 import com.svalero.films.exception.ResourceNotFoundException;
+import com.svalero.films.repository.FilmRepository;
+import com.svalero.films.service.DirectorService;
 import com.svalero.films.service.FilmService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +20,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
+    private final FilmRepository filmRepository;
 
+    public FilmController(FilmRepository filmRepository) {
+        this.filmRepository = filmRepository;
+    }
     @Autowired
     private FilmService filmService;
+    private DirectorService directorService;
 
     private static final Logger logger = (Logger) LoggerFactory.getLogger(FilmController.class);
 
@@ -110,5 +118,16 @@ public class FilmController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
+    // 🔹 1️⃣ Obtener todas las películas de un director específico
+    @GetMapping("/director/{directorId}")
+    public ResponseEntity<List<Film>> getFilmsByDirector(@PathVariable Long directorId) {
+        logger.info("Fetching films for director ID: {}", directorId);
+        List<Film> films = filmRepository.findByDirectorId(directorId);
+        return films.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(films);
     }
+
+
+}
+
+
 

@@ -3,8 +3,11 @@ package com.svalero.films.service;
 
 import com.svalero.films.domain.Director;
 import com.svalero.films.domain.Director;
+import com.svalero.films.domain.Film;
 import com.svalero.films.exception.ResourceNotFoundException;
 import com.svalero.films.repository.DirectorRepository;
+import com.svalero.films.repository.FilmRepository;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +21,36 @@ public class DirectorService {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(DirectorService.class);
     @Autowired
     private DirectorRepository directorRepository;
+    @Autowired
+    private FilmRepository filmRepository;
 
-    public List<Director> getAllDirectors() {
 
-            logger.info("Getting all directors from db");
-            List<Director> director = directorRepository.findAll();
-            logger.info("{} directors retrieved", director.size());
-            return director;
+    public List<Director> getAllDirectors(String genre) {
+        logger.info("Getting all directors from db. Genre filter: {}", genre);
+
+        List<Director> directors;
+
+        if (genre == null || genre.trim().isEmpty()) {
+
+            directors = directorRepository.findAll();
+        } else {
+            // Obtener todas las películas con ese género
+            List<Film> films = filmRepository.findByGenre(genre);
+
+            if (films.isEmpty()) {
+                throw new ResourceNotFoundException("No directors found for films in genre: " + genre);
+            }
+
+            // Extraer los directores de esas películas y evitar duplicados
+            directors = films.stream()
+                    .map(Film::getDirector)
+                    .distinct()
+                    .toList();
+        }
+
+        logger.info("{} directors retrieved", directors.size());
+
+        return directors;
     }
 
     public Director getDirectorsById(long id) {
@@ -134,6 +160,7 @@ public class DirectorService {
         }
         directorRepository.delete(existingDirector);
     }
+
 
 }
 

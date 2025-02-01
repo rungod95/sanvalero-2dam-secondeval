@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 @RestController
 @RequestMapping("/directors")
 public class DirectorController {
@@ -27,11 +29,12 @@ public class DirectorController {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(DirectorController.class);
 
     @GetMapping
-    public ResponseEntity<List<Director>> getAllDirectors() {
+    public ResponseEntity<List<Director>> getAllDirectors(@RequestParam(value = "genre", defaultValue = "") String genre) {
         logger.info("Starting operation to retrieve all directors");
+        logger.info("genre: {}", genre);
         List<Director> director = new ArrayList<>();
         try {
-            director = directorService.getAllDirectors();
+            director = directorService.getAllDirectors(genre);
             logger.info("Operation completed: {} directors retrieved", director.size());
         } catch (ResourceNotFoundException e) {
             logger.info("No directors found");
@@ -107,5 +110,11 @@ public class DirectorController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
 }
+
+
+
+
+
 

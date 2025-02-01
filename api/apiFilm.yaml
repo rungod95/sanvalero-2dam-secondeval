@@ -14,10 +14,17 @@ servers:
 paths:
   /directors:
     get:
-      summary: Get all directors
+      summary: Get all directors (optionally filter by film genre)
       operationId: getAllDirectors
       tags:
         - Directors
+      parameters:
+        - name: genre
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter directors by film genre
       responses:
         "200":
           description: A list of directors
@@ -27,6 +34,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Director"
+        "404":
+          description: No directors found
     post:
       summary: Add a new director
       operationId: addDirector
@@ -147,6 +156,7 @@ paths:
           description: Director deleted successfully
         "404":
           description: Director not found
+
   /films:
     get:
       summary: Get all films
@@ -283,6 +293,29 @@ paths:
           description: Film deleted successfully
         "404":
           description: Film not found
+  /films/director/{id}:
+    get:
+      summary: Get all films by a specific director
+      operationId: getFilmsByDirector
+      tags:
+        - Films
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: A list of films by the director
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Film"
+        "404":
+          description: No films found for the director
 
 components:
   schemas:

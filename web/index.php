@@ -22,4 +22,24 @@
     </main>
     <?php include 'include/footer.php'; ?>
 </body>
+<script>
+    function generateToken() {
+        fetch("http://localhost:8080/api/auth/login", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+                username: "user",
+                password: "password"
+            }).toString()
+        })
+        .then(response => response.text())
+        .then(data => {
+            localStorage.setItem("jwtToken", data);  // Guardar el token
+        })
+        .catch(error => console.error("Error en login:", error));
+    }
+    generateToken();
+</script>
 </html>

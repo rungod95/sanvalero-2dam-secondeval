@@ -74,6 +74,7 @@ div.card {
     padding: 10px;
     margin: 10px;
     border-radius: 5px;
+    position: relative;
 
     img.card-img {
         padding: 15px;
@@ -83,6 +84,23 @@ div.card {
         
         .card-director {
             margin-bottom: 5px;
+        }
+    }
+
+    .card-delete {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 5px;
+        color: red;
+        cursor: pointer;
+        display: none;
+        font-size: 1.2em;
+    }
+
+    &:hover {
+        .card-delete {
+            display: block;
         }
     }
 }

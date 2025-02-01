@@ -2,7 +2,7 @@ name: '2dam1ev'
 
 services:
   mysql:
-    image: mysql:latest
+    image: mysql:9.2.0
     env_file:
       - ./.env
     volumes:
@@ -10,6 +10,32 @@ services:
       - data:/var/lib/mysql
     ports:
       - 3306:3306
+  
+  api:
+    build:
+      context: ../
+      dockerfile: ./devops/Dockerfile.api
+    env_file:
+      - ./.env
+    volumes:
+      - ./application.properties:/api/src/main/resources/application.properties
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+    command: ["mvn", "spring-boot:run"]
+
+  web:
+    build:
+      context: ../
+      dockerfile: ./devops/Dockerfile.web 
+    volumes:
+      - ../web:/var/www/html
+    ports:
+      - 8001:80
+    depends_on:
+      - mysql
+      - api
 
 volumes:
   data:

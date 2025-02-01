@@ -12,7 +12,7 @@ public class MainApp extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/svalero/javaFX/view/main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 900);
-        stage.setTitle("JavaFX Async API Example");
+        stage.setTitle("Films Collection");
         stage.setScene(scene);
         stage.show();
     }

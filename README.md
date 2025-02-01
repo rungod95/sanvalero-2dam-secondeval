@@ -18,7 +18,7 @@ MYSQL_PORT=3306
 To configure the API connection with the DB, you have to create a new file called `application.properties` in the devops folder. This file should have the following content (configure it using the data from the `.env` file):
 ```
 spring.application.name=example_name
-spring.datasource.url=jdbc:mysql://localhost:example_port/example_db?serverTimezone=UTC
+spring.datasource.url=jdbc:mysql://2dam1ev-mysql-1:example_port/example_db?serverTimezone=UTC
 spring.datasource.username=example_user
 spring.datasource.password=example_pass
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -27,6 +27,7 @@ spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 ```
+IMPORTANT: Replace `2dam1ev-mysql-1` with the name of your MySQL container (it could be the same)
 
 ### Run the project
 Then, you have to run the following command, placed in the devops folder:

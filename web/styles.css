@@ -1,16 +1,66 @@
-.image-button {
-    img {
-        padding: 10px;
-        border-radius: 5px;
-        border: 5px solid #FFF;
-    }
-    &:hover {
-        img {
-            border-radius: 10px;
-            border: 5px solid #000;
+main {
+    margin-bottom: 75px !important;
+}
+
+.main-image-button-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    text-align: center;
+    margin-top: 50px;
+
+    .image-button-container {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        position: relative;
+
+        .image-button {
+            img {
+                width: 200px;
+                height: auto;
+                margin: 20px 20px 10px 20px;
+                padding: 10px ;
+                border-radius: 5px;
+                border: 5px solid #FFF;
+            }
+            
+    
+            &:hover {
+                img {
+                    border-radius: 10px;
+                    border: 5px solid #000;
+                }
+            }
+    
+        }
+
+        .create-new-button {
+            color: #000;
+            font-size: x-large;
+            display: none;
+            white-space: nowrap;
+            padding: 6px 12px;
+            border-radius: 5px;
+            border: 5px solid #FFF;
+
+            &:hover {
+                border-radius: 10px;
+                border: 5px solid #000;
+            }
+        }
+
+        &:hover {
+            >.create-new-button {
+                display: inline-block;
+                position: absolute;
+                top: 100%;
+                /* Center horizontally */
+                left: 50%;
+                transform: translateX(-50%);
+            }
         }
     }
-
 }
 
 #card-container {
@@ -24,6 +74,7 @@ div.card {
     padding: 10px;
     margin: 10px;
     border-radius: 5px;
+    position: relative;
 
     img.card-img {
         padding: 15px;
@@ -35,4 +86,29 @@ div.card {
             margin-bottom: 5px;
         }
     }
+
+    .card-delete {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 5px;
+        color: red;
+        cursor: pointer;
+        display: none;
+        font-size: 1.2em;
+    }
+
+    &:hover {
+        .card-delete {
+            display: block;
+        }
+    }
+}
+
+#form-container {
+    margin-top: 20px !important;
+}
+
+.form-check-label {
+    margin-right: 10px;
 }

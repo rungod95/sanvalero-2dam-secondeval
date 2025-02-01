@@ -1,0 +1,49 @@
+/* Estilo general */
+.root {
+    -fx-background-color: #1E1E1E; /* Fondo oscuro */
+    -fx-padding: 20px;
+    -fx-alignment: center;
+}
+
+/* Botón */
+.button {
+    -fx-background-color: #007ACC; /* Azul intenso */
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: #005F9E; /* Azul más oscuro al pasar el mouse */
+}
+
+/* Contenedor de películas */
+#filmContainer {
+    -fx-spacing: 10;
+    -fx-padding: 10;
+    -fx-background-color: #252526;
+    -fx-border-color: #3E3E3E;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+}
+
+/* Texto de cada película */
+.film-label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-padding: 8px;
+    -fx-background-color: #333;
+    -fx-border-color: #444;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+/* Animación al pasar el ratón */
+.film-label:hover {
+    -fx-background-color: #555;
+    -fx-border-color: #666;
+}

@@ -10,4 +10,8 @@ public interface FilmRepository extends CrudRepository<Film, Integer> {
     List<Film> findAll();
     Optional<Film> findById(long id);
     Film save (Film film);
+    List<Film> findByDirectorId(Long directorId);
+    List<Film> findByGenre(String genre);
+
+
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Aquí definimos SOLO estilos auxiliares, por ejemplo tu FAB primario -->
+    <style name="Widget.MaterialComponents.FloatingActionButton.Primary"
+        parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="tint">@android:color/white</item>
+    </style>
+</resources>
+
+

@@ -371,14 +371,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors",
+							"raw": "{{protocol}}://{{address}}:{{port}}/directors",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"directors"
 							]
 						}

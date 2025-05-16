@@ -1,18 +1,29 @@
-// src/test/java/com/svalero/films/controller/FilmControllerTests.java
+
 package com.svalero.films.controller;
 
 import com.svalero.films.domain.Director;
 import com.svalero.films.domain.Film;
 import com.svalero.films.exception.ResourceNotFoundException;
+import com.svalero.films.security.JwtAuthenticationFilter;
+import com.svalero.films.security.JwtTokenService;
 import com.svalero.films.service.FilmService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -22,7 +33,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(FilmController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+
 class FilmControllerTests {
 
     @Autowired
@@ -32,7 +46,12 @@ class FilmControllerTests {
     private ObjectMapper objectMapper;
 
     @MockBean
+    private JwtTokenService jwtTokenService;
+
+
+    @MockBean
     private FilmService filmService;
+
 
     @Test
     void testGetAllFilms_returnOk() throws Exception {

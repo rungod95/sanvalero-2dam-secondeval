@@ -24,7 +24,7 @@ public class FilmApi {
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.82.182:8080")
+                .baseUrl("http://ec2-44-218-249-120.compute-1.amazonaws.com:8080")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 

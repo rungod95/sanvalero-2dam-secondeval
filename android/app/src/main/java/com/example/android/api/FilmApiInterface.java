@@ -34,7 +34,8 @@ public interface FilmApiInterface {
 
     //Actualizar una pelicula existente
     @PUT("films/{id}")
-    Call<Void> updateFilm(@Path("id") long id, @Body Film film);
+    Call<Film> updateFilm(@Path("id") long id, @Body Film film);
+
 
     //Eliminar una pelicula por ID
     @DELETE("films/{id}")

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -114,16 +115,18 @@ class FilmServiceTests {
     @Test
     void whenUpdateFilm_exists_thenReturnUpdated() {
         Long id = 1L;
-        Film existing = new Film(id, "Old", "G", LocalDate.now(), 80, false, null);
-        Film updated = new Film(id, "New", "G", existing.getReleaseDate(), 80, true, null);
+        Director director = new Director(1L, "N", "L", LocalDate.parse("1970-01-01"), "Nat", false);
+        Film existing = new Film(id, "Old", "G", LocalDate.now(), 80, false, director);
+        Film updated = new Film(id, "New", "G", existing.getReleaseDate(), 80, true, director);
 
         when(filmRepository.findById(id)).thenReturn(Optional.of(existing));
         when(filmRepository.save(existing)).thenReturn(updated);
+        when(directorRepository.findById(anyLong())).thenReturn(Optional.of(director));
 
         Film result = filmService.updateFilm(id, updated);
 
         assertThat(result.getTitle()).isEqualTo("New");
-        verify(filmRepository).findById(id);
+        verify(filmRepository, times(2)).findById(id);
         verify(filmRepository).save(existing);
     }
 
@@ -138,11 +141,13 @@ class FilmServiceTests {
     @Test
     void whenUpdatePartialFilm_exists_thenReturnUpdated() {
         Long id = 1L;
-        Film existing = new Film(id, "Old", "G", LocalDate.now(), 80, false, null);
+        Director director = new Director(1L, "N", "L", LocalDate.parse("1970-01-01"), "Nat", false);
+        Film existing = new Film(id, "Old", "G", LocalDate.now(), 80, false, director);
         Film partial = new Film(); partial.setTitle("Part");
 
         when(filmRepository.findById(id)).thenReturn(Optional.of(existing));
         when(filmRepository.save(existing)).thenReturn(existing);
+        when(directorRepository.findById(anyLong())).thenReturn(Optional.of(director));
 
         Film result = filmService.updatePartialFilm(id, partial);
 

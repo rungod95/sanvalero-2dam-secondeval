@@ -1,8 +1,11 @@
+// src/test/java/com/svalero/films/service/FilmServiceTests.java
 package com.svalero.films.service;
 
+import com.svalero.films.domain.Director;
 import com.svalero.films.domain.Film;
+import com.svalero.films.exception.ResourceNotFoundException;
+import com.svalero.films.repository.DirectorRepository;
 import com.svalero.films.repository.FilmRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,7 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,132 +25,154 @@ class FilmServiceTests {
     @Mock
     private FilmRepository filmRepository;
 
+    @Mock
+    private DirectorRepository directorRepository;
+
     @InjectMocks
     private FilmService filmService;
 
     @Test
-    void testGetAllFilmsNoGenre() {
-        List<Film> mockFilms = List.of(
-            new Film(1, "Inception", "Sci-Fi", LocalDate.parse("2010-07-16"), 148, true, null),
-            new Film(2, "Memento",   "Thriller", LocalDate.parse("2000-10-11"), 113, false, null)
+    void whenGetAllFilms_thenReturnList() {
+        List<Film> films = List.of(
+            new Film(1L, "Inception", "Sci-Fi", LocalDate.parse("2010-07-16"), 148, true, null)
         );
-        when(filmRepository.findAll()).thenReturn(mockFilms);
+        when(filmRepository.findAll()).thenReturn(films);
 
-        var result = filmService.getAllFilms(null);
-        assertEquals(2, result.size());
-        assertEquals("Inception", result.get(0).getTitle());
+        List<Film> result = filmService.getAllFilms();
 
+        assertThat(result)
+            .hasSize(1)
+            .first()
+            .extracting(Film::getTitle)
+            .isEqualTo("Inception");
         verify(filmRepository).findAll();
-        verify(filmRepository, never()).findByGenre(anyString());
     }
 
     @Test
-    void testGetAllFilmsByGenre() {
-        List<Film> mockFilms = List.of(
-            new Film(1, "Inception", "Sci-Fi", LocalDate.parse("2010-07-16"), 148, true, null)
-        );
-        when(filmRepository.findByGenre("Sci-Fi")).thenReturn(mockFilms);
+    void whenGetFilmsById_exists_thenReturnFilm() {
+        Film film = new Film(1L, "Inception", "Sci-Fi", LocalDate.parse("2010-07-16"), 148, true, null);
+        when(filmRepository.findById(1L)).thenReturn(Optional.of(film));
 
-        var result = filmService.getAllFilms("Sci-Fi");
-        assertEquals(1, result.size());
-        assertEquals("Inception", result.get(0).getTitle());
+        Film result = filmService.getFilmsById(1L);
 
-        verify(filmRepository).findByGenre("Sci-Fi");
-        verify(filmRepository, never()).findAll();
+        assertThat(result).isEqualTo(film);
+        verify(filmRepository).findById(1L);
     }
 
     @Test
-    void testGetFilmByIdExists() {
-        Film mockFilm = new Film(1, "Inception", "Sci-Fi", LocalDate.parse("2010-07-16"), 148, true, null);
-        when(filmRepository.findById(1)).thenReturn(Optional.of(mockFilm));
+    void whenGetFilmsById_notExists_thenThrow() {
+        when(filmRepository.findById(99L)).thenReturn(Optional.empty());
 
-        var result = filmService.getFilmById(1);
-        assertTrue(result.isPresent());
-        assertEquals("Inception", result.get().getTitle());
-
-        verify(filmRepository).findById(1);
+        assertThatThrownBy(() -> filmService.getFilmsById(99L))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessage("Film not found");
     }
 
     @Test
-    void testCreateFilm() {
-        Film input = new Film(null, "Interstellar", "Sci-Fi", LocalDate.parse("2014-11-07"), 169, true, null);
-        Film saved = new Film(3, input.getTitle(), input.getGenre(), input.getReleaseDate(), input.getDuration(), input.isViewed(), null);
-        when(filmRepository.save(input)).thenReturn(saved);
-
-        var result = filmService.createFilm(input);
-        assertEquals(3, result.getId());
-        assertEquals("Interstellar", result.getTitle());
-
-        verify(filmRepository).save(input);
+    void whenCreateFilms_null_thenThrow() {
+        assertThatThrownBy(() -> filmService.createFilms(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Film cannot be null");
     }
 
     @Test
-    void testUpdateFilm() {
-        long id = 1;
-        Film input = new Film(id, "Inception Updated", "Sci-Fi", LocalDate.parse("2010-07-16"), 148, true, null);
-        when(filmRepository.existsById(id)).thenReturn(true);
-        when(filmRepository.save(input)).thenReturn(input);
-
-        var result = filmService.updateFilm(id, input);
-        assertEquals("Inception Updated", result.getTitle());
-
-        verify(filmRepository).existsById(id);
-        verify(filmRepository).save(input);
+    void whenCreateFilms_missingTitle_thenThrow() {
+        Film bad = new Film(null, "", "Genre", LocalDate.now(), 120, true,
+            new Director(1L, "Name", "Last", LocalDate.now(), "Nat", false));
+        assertThatThrownBy(() -> filmService.createFilms(bad))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Title cannot be null or empty");
     }
 
     @Test
-    void testUpdateFilmNotFound() {
-        long id = 99;
-        Film input = new Film(id, "Nonexistent", "Drama", LocalDate.parse("2020-01-01"), 120, false, null);
-        when(filmRepository.existsById(id)).thenReturn(false);
+    void whenCreateFilms_directorNotFound_thenThrow() {
+        Film f = new Film(null, "T", "G", LocalDate.now(), 90, false,
+            new Director(2L, "X", "Y", LocalDate.now(), "Z", true));
+        when(directorRepository.findById(2L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> filmService.updateFilm(id, input));
-
-        verify(filmRepository).existsById(id);
-        verify(filmRepository, never()).save(any(Film.class));
+        assertThatThrownBy(() -> filmService.createFilms(f))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessageContaining("Director with ID 2 not found");
     }
 
     @Test
-    void testPartialUpdateFilm() {
-        long id = 1;
-        Film existing = new Film(id, "Original", "Sci-Fi", LocalDate.parse("2010-07-16"), 148, true, null);
-        Film partial = new Film();
-        partial.setTitle("Updated Title");
+    void whenCreateFilms_valid_thenReturnSaved() {
+        Director d = new Director(1L, "N", "L", LocalDate.parse("1970-01-01"), "Nat", false);
+        Film in = new Film(null, "T", "G", LocalDate.now(), 100, true, d);
+        Film out = new Film(5L, "T", "G", in.getReleaseDate(), 100, true, d);
+
+        when(directorRepository.findById(1L)).thenReturn(Optional.of(d));
+        when(filmRepository.save(in)).thenReturn(out);
+
+        Film result = filmService.createFilms(in);
+
+        assertThat(result.getId()).isEqualTo(5L);
+        assertThat(result.getDirector()).isEqualTo(d);
+        verify(filmRepository).save(in);
+    }
+
+    @Test
+    void whenUpdateFilm_exists_thenReturnUpdated() {
+        Long id = 1L;
+        Film existing = new Film(id, "Old", "G", LocalDate.now(), 80, false, null);
+        Film updated = new Film(id, "New", "G", existing.getReleaseDate(), 80, true, null);
 
         when(filmRepository.findById(id)).thenReturn(Optional.of(existing));
-        // para el save, devolvemos lo que nos pasan
-        when(filmRepository.save(any(Film.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(filmRepository.save(existing)).thenReturn(updated);
 
-        var result = filmService.partialUpdateFilm(id, partial);
-        assertEquals("Updated Title", result.getTitle());
-        assertEquals("Sci-Fi", result.getGenre()); // lo que no se cambió
+        Film result = filmService.updateFilm(id, updated);
 
+        assertThat(result.getTitle()).isEqualTo("New");
         verify(filmRepository).findById(id);
-        verify(filmRepository).save(any(Film.class));
+        verify(filmRepository).save(existing);
     }
 
     @Test
-    void testPartialUpdateFilmNotFound() {
-        long id = 99;
-        Film partial = new Film();
-        partial.setTitle("Won't apply");
+    void whenUpdateFilm_notFound_thenThrow() {
+        when(filmRepository.findById(3L)).thenReturn(Optional.empty());
 
-        when(filmRepository.findById(id)).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () -> filmService.partialUpdateFilm(id, partial));
-
-        verify(filmRepository).findById(id);
-        verify(filmRepository, never()).save(any(Film.class));
+        assertThatThrownBy(() -> filmService.updateFilm(3L, new Film()))
+            .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
-    void testDeleteFilm() {
-        long id = 1;
-        // si no lanza excepción, entendemos que borró
+    void whenUpdatePartialFilm_exists_thenReturnUpdated() {
+        Long id = 1L;
+        Film existing = new Film(id, "Old", "G", LocalDate.now(), 80, false, null);
+        Film partial = new Film(); partial.setTitle("Part");
+
+        when(filmRepository.findById(id)).thenReturn(Optional.of(existing));
+        when(filmRepository.save(existing)).thenReturn(existing);
+
+        Film result = filmService.updatePartialFilm(id, partial);
+
+        assertThat(result.getTitle()).isEqualTo("Part");
+    }
+
+    @Test
+    void whenUpdatePartialFilm_notFound_thenThrow() {
+        when(filmRepository.findById(4L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> filmService.updatePartialFilm(4L, new Film()))
+            .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void whenDeleteFilm_exists_thenDeleted() {
+        Long id = 1L;
+        Film f = new Film(id, "T", "G", LocalDate.now(), 70, false, null);
+        when(filmRepository.findById(id)).thenReturn(Optional.of(f));
+
         filmService.deleteFilm(id);
-        verify(filmRepository).deleteById(id);
-    }
-}
 
-public class FilmServiceTests {
+        verify(filmRepository).delete(f);
+    }
+
+    @Test
+    void whenDeleteFilm_notFound_thenThrow() {
+        when(filmRepository.findById(7L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> filmService.deleteFilm(7L))
+            .isInstanceOf(ResourceNotFoundException.class);
+    }
 }

@@ -1,0 +1,679 @@
+{
+	"info": {
+		"_postman_id": "4fa3cd5d-402f-4547-8731-d0d719d1e177",
+		"name": "Proyecto DAM – API Tests",
+		"description": "Colección para testear todos los endpoints de Films y Directors con casos 2xx, 400 y 404",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31616608"
+	},
+	"item": [
+		{
+			"name": "Films",
+			"item": [
+				{
+					"name": "GET All Films",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"Response is JSON array\", () => {",
+									"    pm.response.to.be.json;",
+									"    pm.expect(pm.response.json()).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"films"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Film by ID (200)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"Body has required fields\", () => {",
+									"    const f = pm.response.json();",
+									"    pm.expect(f).to.have.property(\"id\").that.equals(parseInt(pm.environment.get(\"filmId\")));",
+									"    [\"title\",\"genre\",\"duration\",\"releaseDate\",\"viewed\"].forEach(prop => pm.expect(f).to.have.property(prop));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"films",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Film by ID (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => pm.response.to.have.status(404));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/99999",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"films",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create Film (201)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => pm.response.to.have.status(201));",
+									"const json = pm.response.json();",
+									"pm.environment.set(\"filmId\", json.id);",
+									"pm.test(\"Title matches\", () => pm.expect(json.title).to.equal(\"Mi película\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Mi película\",\n  \"genre\": \"Drama\",\n  \"releaseDate\": \"2025-01-01\",\n  \"duration\": 120,\n  \"viewed\": false,\n  \"director\": { \"id\": {{directorId}} }\n}"
+						},
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"films"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create Film (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", () => pm.response.to.have.status(400));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"genre\": \"Drama\"  \n}"
+						},
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"films"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update Film",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"const f = pm.response.json();",
+									"pm.test(\"Genre updated\", () => pm.expect(f.genre).to.equal(\"Acción\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Mi película MOD\",\n  \"genre\": \"Acción\",\n  \"releaseDate\": \"2025-02-02\",\n  \"duration\": 130,\n  \"viewed\": true,\n  \"director\": { \"id\": {{directorId}} }\n}"
+						},
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/2",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"films",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH Partial Update Film",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"Viewed is true\", () => pm.expect(pm.response.json().viewed).to.be.true);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"viewed\": true\n}"
+						},
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/2",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"films",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Film (204)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", () => pm.response.to.have.status([200,204]));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/3",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"films",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Film (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => pm.response.to.have.status(404));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/99999",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"films",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Directors",
+			"item": [
+				{
+					"name": "GET All Directors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"Response is JSON array\", () => pm.response.to.be.json && pm.expect(pm.response.json()).to.be.an('array'));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"directors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Director by ID (200)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"Has id and name\", () => {",
+									"  const d = pm.response.json();",
+									"  pm.expect(d).to.have.property('id').that.equals(parseInt(pm.environment.get('directorId')));",
+									"  pm.expect(d).to.have.property('name');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors/2",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"directors",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Director by ID (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => pm.response.to.have.status(404));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors/99999",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"directors",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create Director (201)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => pm.response.to.have.status(201));",
+									"pm.environment.set(\"directorId\", pm.response.json().id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Director X\"\n}"
+						},
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"directors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create Director (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", () => pm.response.to.have.status(400));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"directors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update Director",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"Name updated\", () => pm.expect(pm.response.json().name).to.equal(\"Director Y\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Director Y\"\n}"
+						},
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors/2",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"directors",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Director (204)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", () => pm.response.to.have.status([200,204]));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors/5",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"directors",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Director (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => pm.response.to.have.status(404));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors/99999",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{direction}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"directors",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080/api",
+			"type": "string"
+		},
+		{
+			"key": "filmId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "directorId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

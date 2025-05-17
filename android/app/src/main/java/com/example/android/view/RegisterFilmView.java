@@ -53,13 +53,13 @@ public class RegisterFilmView extends AppCompatActivity implements RegisterFilmC
 
         presenter = new RegisterFilmPresenter(this);
 
-        // Carga directores y, al acabar, si es edición, carga datos de la película
+
         loadDirectors();
 
         filmId = getIntent().getLongExtra("filmId", -1);
 
         saveBtn.setOnClickListener(v -> {
-            // Recoger y validar campos
+
             String title = titleEt.getText().toString().trim();
             String genre = genreEt.getText().toString().trim();
             String rd    = releaseDateEt.getText().toString().trim();
@@ -76,7 +76,7 @@ public class RegisterFilmView extends AppCompatActivity implements RegisterFilmC
                 return;
             }
 
-            // Obtener texto seleccionado y buscar el Director correspondiente
+
             String selectedName = spinnerDirectors.getText().toString();
             Director selectedDirector = null;
             for (Director d : directorList) {
@@ -91,7 +91,7 @@ public class RegisterFilmView extends AppCompatActivity implements RegisterFilmC
                 return;
             }
 
-            // Llamar al presenter según creación o edición
+
             if (filmId == -1) {
                 presenter.saveFilm(title, genre, rd, duration, viewed, selectedDirector);
             } else {
@@ -111,13 +111,13 @@ public class RegisterFilmView extends AppCompatActivity implements RegisterFilmC
                 }
                 directorList = resp.body();
 
-                // Preparar lista de nombres
+
                 List<String> names = new ArrayList<>();
                 for (Director d : directorList) {
                     names.add(d.getName() + " " + d.getLastName());
                 }
 
-                // Adaptador para MaterialAutoCompleteTextView
+
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     RegisterFilmView.this,
                     android.R.layout.simple_list_item_1,
@@ -125,7 +125,7 @@ public class RegisterFilmView extends AppCompatActivity implements RegisterFilmC
                 );
                 spinnerDirectors.setAdapter(adapter);
 
-                // Si estamos editando, cargamos los datos de la película
+
                 if (filmId != -1) {
                     setTitle("Edit Film");
                     fetchFilmDetails(filmId);
@@ -149,7 +149,7 @@ public class RegisterFilmView extends AppCompatActivity implements RegisterFilmC
                 durationEt.setText(String.valueOf(film.getDuration()));
                 viewedCb.setChecked(film.isViewed());
 
-                // Posicionar el AutoCompleteTextView en el director actual
+
                 if (film.getDirector() != null) {
                     String full = film.getDirector().getName()
                         + " " + film.getDirector().getLastName();

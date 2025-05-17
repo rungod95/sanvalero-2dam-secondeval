@@ -101,6 +101,9 @@ public class FilmService {
         if (updatedFilm.getViewed() == null) {
             throw new IllegalArgumentException("Viewed flag cannot be null");
         }
+        if (updatedFilm.getDirector() == null || updatedFilm.getDirector().getId() == null) {
+            throw new IllegalArgumentException("Director ID cannot be null");
+        }
 
         // Actualizar los valores de la película
         film.setTitle(updatedFilm.getTitle());
@@ -108,8 +111,14 @@ public class FilmService {
         film.setDuration(updatedFilm.getDuration());
         film.setReleaseDate(updatedFilm.getReleaseDate());
         film.setViewed(updatedFilm.getViewed());
-
-        return filmRepository.save(film);
+        film.setDirector(updatedFilm.getDirector());
+        filmRepository.save(film);
+        Film newFilm = filmRepository.findById(film.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Film with ID " + film.getId() + " not found"));
+        Director director = directorRepository.findById(newFilm.getDirector().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Director with ID " + newFilm.getDirector().getId() + " not found"));
+        newFilm.setDirector(director);
+        return newFilm;
     }
 
 
@@ -135,7 +144,16 @@ public class FilmService {
         if (film.getViewed() != null) {
             updatedFilm.setViewed(film.getViewed());
         }
-        return filmRepository.save(updatedFilm);
+        if (film.getDirector() != null) {
+            updatedFilm.setDirector(film.getDirector());
+        }
+        filmRepository.save(updatedFilm);
+        Film newFilm = filmRepository.findById(updatedFilm.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Film with ID " + updatedFilm.getId() + " not found"));
+        Director director = directorRepository.findById(newFilm.getDirector().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Director with ID " + newFilm.getDirector().getId() + " not found"));
+        newFilm.setDirector(director);
+        return newFilm;
     }
 
     public void deleteFilm(Long id) {

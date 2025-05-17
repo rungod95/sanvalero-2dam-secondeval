@@ -9,11 +9,11 @@ import java.util.function.Consumer;
 
 public class ApiService {
     private final HttpClient client = HttpClient.newHttpClient();
-    private final String API_URL = "http://localhost:8080/films";
+    private final String API_URL = "http://ec2-44-218-249-120.compute-1.amazonaws.com:8080/";
 
-    public void getData(Consumer<String> callback) {
+    public void getData(String endpoint, Consumer<String> callback) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(API_URL))
+                .uri(URI.create(API_URL + endpoint))
                 .GET()
                 .build();
 

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Film {
     private Long id;
     private String title;
@@ -15,16 +16,17 @@ public class Film {
     private LocalDate releaseDate;
     private int duration;
     private boolean viewed;
+    private Director director;
 
 
-
-public Film(Long id, String title, String genre, LocalDate releaseDate, int duration, boolean viewed) {
+    public Film(Long id, String title, String genre, LocalDate releaseDate, int duration, boolean viewed) {
         this.id = id;
         this.title = title;
         this.genre = genre;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.viewed = viewed;
+
     }
 
     public Long getId() {
@@ -72,12 +74,11 @@ public Film(Long id, String title, String genre, LocalDate releaseDate, int dura
     }
 
 
-
+    public void setDirector(Director director) {
+    }
 
 
 }
-
-
 
 
 

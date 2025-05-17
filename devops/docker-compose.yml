@@ -1,12 +1,15 @@
-name: '2dam1ev'
+name: '2dam2ev'
 
 services:
   mysql:
     image: mysql:9.2.0
+    restart: always
     env_file:
       - ./.env
     volumes:
       - ./dbCreation.sql:/docker-entrypoint-initdb.d/dbCreation.sql
+      - ./dbInserts.sql:/docker-entrypoint-initdb.d/dbInserts.sql
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
       - data:/var/lib/mysql
     ports:
       - 3306:3306
@@ -15,6 +18,7 @@ services:
     build:
       context: ../
       dockerfile: ./devops/Dockerfile.api
+    restart: always
     env_file:
       - ./.env
     volumes:
@@ -29,6 +33,7 @@ services:
     build:
       context: ../
       dockerfile: ./devops/Dockerfile.web 
+    restart: always
     volumes:
       - ../web:/var/www/html
     ports:

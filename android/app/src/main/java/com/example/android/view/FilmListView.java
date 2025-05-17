@@ -1,5 +1,6 @@
 package com.example.android.view;
 
+import android.content.Intent;                     // ← importa Intent
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -11,16 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.R;
 import com.example.android.adapter.FilmAdapter;
 import com.example.android.contract.FilmListContract;
-import com.example.android.domain.Film;
 import com.example.android.presenter.FilmListPresenter;
-import com.example.android.util.BaseActivity;
+import com.example.android.domain.Film;
+import com.google.android.material.floatingactionbutton.FloatingActionButton; // ← importa el FAB
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FilmListView extends AppCompatActivity implements FilmListContract.View {
-
-
 
     private FilmListContract.Presenter presenter;
     private FilmAdapter filmAdapter;
@@ -31,7 +30,6 @@ public class FilmListView extends AppCompatActivity implements FilmListContract.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_film_list);
 
-        // Configura la Toolbar personalizada
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -41,11 +39,16 @@ public class FilmListView extends AppCompatActivity implements FilmListContract.
         RecyclerView recyclerView = findViewById(R.id.filmRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         filmAdapter = new FilmAdapter(filmList);
         recyclerView.setAdapter(filmAdapter);
-    }
 
+        // ——— AQUÍ agregas el listener al FAB ———
+        FloatingActionButton fab = findViewById(R.id.addFilm);
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(FilmListView.this, RegisterFilmView.class);
+            startActivity(intent);
+        });
+    }
 
     @Override
     protected void onResume() {
@@ -59,19 +62,6 @@ public class FilmListView extends AppCompatActivity implements FilmListContract.
         this.filmList.addAll(filmList);
         filmAdapter.notifyDataSetChanged();
     }
-
-
-
-
-//     @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        if (item.getItemId() == R.id.addFilm) {
-//            // Acción para registrar un nuevo atleta
-//            Intent intent = new Intent(this, RegisterFilmView.class);
-//            startActivity(intent);
-//        }
-//        return true;
-//    }
 
     @Override
     public void showErrorMessage(String message) {

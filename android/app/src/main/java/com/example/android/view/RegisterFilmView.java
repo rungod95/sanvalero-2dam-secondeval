@@ -6,7 +6,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +17,7 @@ import com.example.android.domain.Film;
 import com.example.android.presenter.RegisterFilmPresenter;
 import com.example.android.api.DirectorApi;
 import com.example.android.api.DirectorApiInterface;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class RegisterFilmView extends AppCompatActivity implements RegisterFilmC
     private EditText titleEt, genreEt, releaseDateEt, durationEt;
     private CheckBox viewedCb;
     private Button saveBtn;
-    private Spinner spinnerDirectors;
+    private MaterialAutoCompleteTextView spinnerDirectors;
     private List<Director> directorList = new ArrayList<>();
 
     private RegisterFilmPresenter presenter;
@@ -59,6 +59,7 @@ public class RegisterFilmView extends AppCompatActivity implements RegisterFilmC
         filmId = getIntent().getLongExtra("filmId", -1);
 
         saveBtn.setOnClickListener(v -> {
+            // Recoger y validar campos
             String title = titleEt.getText().toString().trim();
             String genre = genreEt.getText().toString().trim();
             String rd    = releaseDateEt.getText().toString().trim();
@@ -74,13 +75,23 @@ public class RegisterFilmView extends AppCompatActivity implements RegisterFilmC
                 Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
                 return;
             }
-            int pos = spinnerDirectors.getSelectedItemPosition();
-            if (pos == Spinner.INVALID_POSITION || pos >= directorList.size()) {
-                Toast.makeText(this, "Select a director", Toast.LENGTH_SHORT).show();
+
+            // Obtener texto seleccionado y buscar el Director correspondiente
+            String selectedName = spinnerDirectors.getText().toString();
+            Director selectedDirector = null;
+            for (Director d : directorList) {
+                String full = d.getName() + " " + d.getLastName();
+                if (full.equals(selectedName)) {
+                    selectedDirector = d;
+                    break;
+                }
+            }
+            if (selectedDirector == null) {
+                Toast.makeText(this, "Select a valid director", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Director selectedDirector = directorList.get(pos);
 
+            // Llamar al presenter según creación o edición
             if (filmId == -1) {
                 presenter.saveFilm(title, genre, rd, duration, viewed, selectedDirector);
             } else {
@@ -99,19 +110,22 @@ public class RegisterFilmView extends AppCompatActivity implements RegisterFilmC
                     return;
                 }
                 directorList = resp.body();
+
+                // Preparar lista de nombres
                 List<String> names = new ArrayList<>();
                 for (Director d : directorList) {
                     names.add(d.getName() + " " + d.getLastName());
                 }
+
+                // Adaptador para MaterialAutoCompleteTextView
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     RegisterFilmView.this,
-                    android.R.layout.simple_spinner_item,
+                    android.R.layout.simple_list_item_1,
                     names
                 );
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerDirectors.setAdapter(adapter);
 
-                // Ahora que el spinner está listo, si es edición, cargamos los datos
+                // Si estamos editando, cargamos los datos de la película
                 if (filmId != -1) {
                     setTitle("Edit Film");
                     fetchFilmDetails(filmId);
@@ -134,12 +148,12 @@ public class RegisterFilmView extends AppCompatActivity implements RegisterFilmC
                 releaseDateEt.setText(film.getReleaseDate().toString());
                 durationEt.setText(String.valueOf(film.getDuration()));
                 viewedCb.setChecked(film.isViewed());
-                // Posicionar el spinner en el director actual
-                for (int i = 0; i < directorList.size(); i++) {
-                    if (directorList.get(i).getId().equals(film.getDirector().getId())) {
-                        spinnerDirectors.setSelection(i);
-                        break;
-                    }
+
+                // Posicionar el AutoCompleteTextView en el director actual
+                if (film.getDirector() != null) {
+                    String full = film.getDirector().getName()
+                        + " " + film.getDirector().getLastName();
+                    spinnerDirectors.setText(full, false);
                 }
             }
             @Override

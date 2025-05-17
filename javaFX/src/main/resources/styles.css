@@ -21,7 +21,7 @@
 }
 
 /* Contenedor de películas */
-#filmContainer {
+.container {
     -fx-spacing: 10;
     -fx-padding: 10;
     -fx-background-color: #252526;

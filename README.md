@@ -40,6 +40,9 @@ To stop the project, you have to run the following command, placed in the devops
 ```
 docker compose down
 ```
+### wiki
+https://github.com/rungod95/sanvalero-2dam-secondeval/wiki
+
 
 ### API documentation
 You can find the API documentation in the following link:

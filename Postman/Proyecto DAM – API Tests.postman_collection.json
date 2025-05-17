@@ -1,10 +1,11 @@
 {
 	"info": {
-		"_postman_id": "4fa3cd5d-402f-4547-8731-d0d719d1e177",
+		"_postman_id": "91887bb2-f5a6-4b29-b769-0bfe359c9b6d",
 		"name": "Proyecto DAM – API Tests",
 		"description": "Colección para testear todos los endpoints de Films y Directors con casos 2xx, 400 y 404",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "31616608"
+		"_exporter_id": "43611281",
+		"_collection_link": "https://javiersanz-5654809.postman.co/workspace/Javier-Sanz's-Workspace~3841216c-9712-4abf-808c-ea951556907c/collection/43611281-91887bb2-f5a6-4b29-b769-0bfe359c9b6d?action=share&source=collection_link&creator=43611281"
 	},
 	"item": [
 		{
@@ -32,14 +33,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films",
+							"raw": "{{protocol}}://{{address}}:{{port}}/films",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"films"
 							]
 						}
@@ -69,14 +69,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/1",
+							"raw": "{{protocol}}://{{address}}:{{port}}/films/1",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"films",
 								"1"
 							]
@@ -102,14 +101,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/99999",
+							"raw": "{{protocol}}://{{address}}:{{port}}/films/99999",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"films",
 								"99999"
 							]
@@ -144,17 +142,16 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"title\": \"Mi película\",\n  \"genre\": \"Drama\",\n  \"releaseDate\": \"2025-01-01\",\n  \"duration\": 120,\n  \"viewed\": false,\n  \"director\": { \"id\": {{directorId}} }\n}"
+							"raw": "{\n  \"title\": \"Mi película\",\n  \"genre\": \"Drama\",\n  \"releaseDate\": \"2025-01-01\",\n  \"duration\": 120,\n  \"viewed\": false,\n  \"director\": { \"id\": 2 }\n}"
 						},
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films",
+							"raw": "{{protocol}}://{{address}}:{{port}}/films",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"films"
 							]
 						}
@@ -188,14 +185,13 @@
 							"raw": "{\n  \"genre\": \"Drama\"  \n}"
 						},
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films",
+							"raw": "{{protocol}}://{{address}}:{{port}}/films",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"films"
 							]
 						}
@@ -228,19 +224,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"title\": \"Mi película MOD\",\n  \"genre\": \"Acción\",\n  \"releaseDate\": \"2025-02-02\",\n  \"duration\": 130,\n  \"viewed\": true,\n  \"director\": { \"id\": {{directorId}} }\n}"
+							"raw": "{\n  \"title\": \"Mi película MOD\",\n  \"genre\": \"Acción\",\n  \"releaseDate\": \"2025-02-02\",\n  \"duration\": 130,\n  \"viewed\": true,\n  \"director\": { \"id\": 1 }\n}"
 						},
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/2",
+							"raw": "{{protocol}}://{{address}}:{{port}}/films/1",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"films",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -271,19 +266,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"viewed\": true\n}"
+							"raw": "{\n  \"viewed\": true,\n  \"director\": { \"id\": 1 }\n}"
 						},
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/2",
+							"raw": "{{protocol}}://{{address}}:{{port}}/films/1",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"films",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -296,7 +290,49 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 204\", () => pm.response.to.have.status([200,204]));"
+									"pm.test(\"Status code is 204 No Content\", () => pm.response.to.have.status(204));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{address}}:{{port}}/films/3",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"films",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Film (403)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403 Forbidden\", () => pm.response.status == 403);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -307,14 +343,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/3",
+							"raw": "{{protocol}}://{{address}}:{{port}}/films/3",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"films",
 								"3"
 							]
@@ -337,17 +372,26 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/films/99999",
+							"raw": "{{protocol}}://{{address}}:{{port}}/films/99999",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"films",
 								"99999"
 							]
@@ -379,14 +423,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors",
+							"raw": "{{protocol}}://{{address}}:{{port}}/directors",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"directors"
 							]
 						}
@@ -416,14 +459,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors/2",
+							"raw": "{{protocol}}://{{address}}:{{port}}/directors/2",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"directors",
 								"2"
 							]
@@ -449,14 +491,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors/99999",
+							"raw": "{{protocol}}://{{address}}:{{port}}/directors/99999",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"directors",
 								"99999"
 							]
@@ -471,8 +512,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", () => pm.response.to.have.status(201));",
-									"pm.environment.set(\"directorId\", pm.response.json().id);"
+									"pm.test(\"Status code is 201\", () => pm.response.to.have.status(201));"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -489,17 +529,16 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Director X\"\n}"
+							"raw": "{\n    \"name\": \"Testing\",\n    \"lastName\": \"Tarantino\",\n    \"birthDate\": \"2025-05-15\",\n    \"nationality\": \"Outsider\",\n    \"awarded\": true\n}"
 						},
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors",
+							"raw": "{{protocol}}://{{address}}:{{port}}/directors",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"directors"
 							]
 						}
@@ -533,14 +572,13 @@
 							"raw": "{}"
 						},
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors",
+							"raw": "{{protocol}}://{{address}}:{{port}}/directors",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"directors"
 							]
 						}
@@ -572,17 +610,58 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Director Y\"\n}"
+							"raw": "{\n    \"name\": \"Testing\",\n    \"lastName\": \"Tarantino\",\n    \"birthDate\": \"2025-05-15\",\n    \"nationality\": \"Outsider\",\n    \"awarded\": false\n}"
 						},
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors/2",
+							"raw": "{{protocol}}://{{address}}:{{port}}/directors/2",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
+								"directors",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update Director Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"Name updated\", () => pm.expect(pm.response.json().awarded).to.equal(true));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"awarded\": true\n}"
+						},
+						"url": {
+							"raw": "{{protocol}}://{{address}}:{{port}}/directors/2",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{address}}"
+							],
+							"port": "{{port}}",
+							"path": [
 								"directors",
 								"2"
 							]
@@ -605,19 +684,63 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors/5",
+							"raw": "{{protocol}}://{{address}}:{{port}}/directors/3",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"directors",
-								"5"
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Director (403)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", () => pm.response.to.have.status(403));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{address}}:{{port}}/directors/3",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{address}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"directors",
+								"3"
 							]
 						}
 					},
@@ -638,17 +761,26 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{direction}}:{{port}}/api/directors/99999",
+							"raw": "{{protocol}}://{{address}}:{{port}}/directors/99999",
 							"protocol": "{{protocol}}",
 							"host": [
-								"{{direction}}"
+								"{{address}}"
 							],
 							"port": "{{port}}",
 							"path": [
-								"api",
 								"directors",
 								"99999"
 							]
@@ -657,6 +789,69 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. Código 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 3. Guardar token en env\r",
+							"const token = pm.response.text();\r",
+							"pm.environment.set(\"authToken\", token);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{protocol}}://{{address}}:{{port}}/api/auth/login?username=user&password=password",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{address}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "user"
+						},
+						{
+							"key": "password",
+							"value": "password"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [
